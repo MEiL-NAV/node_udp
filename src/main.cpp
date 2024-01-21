@@ -1,6 +1,8 @@
-#include <WifiHandler.h>
 #include <WiFiUdp.h>
 #include <ESP8266WiFi.h>
+#include <Wire.h>
+
+#include <WifiHandler.h>
 #include <ParametersHandler.h>
 #include <Sensors.h>
 
@@ -13,6 +15,9 @@ Sensor* sensors[num_of_sensor];
 
 void setup() 
 {
+  Wire.setTimeout(50U);
+  Wire.setClock(400000);
+  Wire.begin();
   Serial.begin(115200);
   
   parameters.init();
@@ -31,7 +36,7 @@ void setup()
     parameters.parameters.server_port
   );
 
-  sensors[0] = new DummySensor();
+  sensors[0] = new Gyroscope_L3GD20H();
 }
 
 void loop() 
