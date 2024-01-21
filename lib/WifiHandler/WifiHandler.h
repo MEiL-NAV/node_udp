@@ -34,21 +34,24 @@ inline bool WifiHander::send_udp(uint8_t command, const T* payload)
         T payload;
         uint16_t CRC16;
     } packet;
-
     if(0 == _udp.beginPacket(_target_ip, _target_port))
     {
+        //Serial.println("Can not begin packet!");
         return false;
     }
     packet.node_id = _node_id;
     packet.command = command;
-    memcpy(static_cast<void*>(&packet) + offsetof(Packet, payload), static_cast<const void*>(payload), sizeof(T));
+    memcpy(static_cast<void*>(reinterpret_cast<uint8_t*>(&packet) + offsetof(Packet, payload)),
+        static_cast<const void*>(payload), sizeof(T));
     packet.CRC16 = crc16.calculateCRC(reinterpret_cast<const uint8_t*>(&packet), sizeof(Packet) - sizeof(uint16_t));
     if(sizeof(Packet) != _udp.write(reinterpret_cast<uint8_t*>(&packet) , sizeof(Packet)))
     {
+        //Serial.println("Error while write packet!");
         return false;
     }
     if(0 == _udp.endPacket())
     {
+        //Serial.println("Error while end packet!");
         return false;
     }
     return true;

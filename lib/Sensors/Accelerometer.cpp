@@ -14,4 +14,11 @@ void Accelerometer::send(WifiHander &wifi_handler)
         Commands::ACCELEROMETER_READING,
         &payload
     );
+
+    // Serial.print("X: ");
+    // Serial.print(X);
+    // Serial.print(", Y: ");
+    // Serial.print(Y);
+    // Serial.print(", Z: ");
+    // Serial.println(Z);
 }

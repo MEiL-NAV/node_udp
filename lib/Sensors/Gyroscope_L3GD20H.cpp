@@ -3,6 +3,7 @@
 #include <Wire.h>
 
 Gyroscope_L3GD20H::Gyroscope_L3GD20H()
+    : I2CDevice(0x6B)
 {
   // Low_ODR = 0 (low speed ODR disabled)
   writeReg(0x39, 0x00);
@@ -18,12 +19,12 @@ Gyroscope_L3GD20H::Gyroscope_L3GD20H()
 
 bool Gyroscope_L3GD20H::update() 
 {
-    Wire.beginTransmission(address);
+    Wire.beginTransmission(device_address);
     // assert the MSB of the address to get the gyro
     // to do slave-transmit subaddress updating.
     Wire.write(data_address | (1 << 7));
     Wire.endTransmission();
-    Wire.requestFrom(address, static_cast<uint8_t>(6));
+    Wire.requestFrom(device_address, static_cast<uint8_t>(6));
     
     int16_t measurements[3];
 
@@ -34,32 +35,8 @@ bool Gyroscope_L3GD20H::update()
       return false;
     }
 
-    X = measurements[0] * 8.75f;
-    Y = measurements[1] * 8.75f;
-    Z = measurements[2] * 8.75f;
+    X = measurements[0] * scaler;
+    Y = measurements[1] * scaler;
+    Z = measurements[2] * scaler;
     return true; 
-}
-
-// Writes a gyro register
-void Gyroscope_L3GD20H::writeReg(uint8_t reg, uint8_t value)
-{
-  Wire.beginTransmission(address);
-  Wire.write(reg);
-  Wire.write(value);
-  last_status = Wire.endTransmission();
-}
-
-// Reads a gyro register
-uint8_t Gyroscope_L3GD20H::readReg(uint8_t reg)
-{
-  uint8_t value;
-
-  Wire.beginTransmission(address);
-  Wire.write(reg);
-  last_status = Wire.endTransmission();
-  Wire.requestFrom(address, static_cast<uint8_t>(1));
-  value = Wire.read();
-  Wire.endTransmission();
-
-  return value;
 }

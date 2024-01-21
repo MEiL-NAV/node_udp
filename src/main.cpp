@@ -10,7 +10,7 @@ WiFiUDP udp;
 WifiHander wifi_handler(udp);
 ParametersHandler parameters;
 
-constexpr size_t num_of_sensor = 1;
+constexpr size_t num_of_sensor = 2;
 Sensor* sensors[num_of_sensor];
 
 void setup() 
@@ -36,7 +36,8 @@ void setup()
     parameters.parameters.server_port
   );
 
-  sensors[0] = new Gyroscope_L3GD20H();
+  sensors[1] = new Gyroscope_L3GD20H();
+  sensors[0] = new Accelerometer_LSM303D();
 }
 
 void loop() 
@@ -67,8 +68,7 @@ void loop()
     if(sensors[i]->update())
     {
       sensors[i]->send(wifi_handler);
+      delay(1);
     }
   }
-  
-  delay(50);
 }
