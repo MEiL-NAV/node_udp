@@ -3,7 +3,7 @@
 
 struct Parameters
 {
-    uint8_t  version           = 3;
+    uint8_t  version           = 1;
     uint8_t  node_id           = 0;
     char     wifi_ssid[16]     = "";
     char     wifi_password[16] = "";
