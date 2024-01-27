@@ -2,13 +2,13 @@
 
 void Gyroscope::send(WifiHander &wifi_handler) 
 {
-    struct __attribute__((__packed__))
+    VectorPacket payload
     {
-        uint32_t time = millis();
-        float X = X;
-        float Y = Y;
-        float Z = Z;
-    } payload;
+        time: millis(),
+        X: X,
+        Y: Y,
+        Z: Z
+    };
 
     wifi_handler.send_udp(
         Commands::GYROSCOPE_READING,

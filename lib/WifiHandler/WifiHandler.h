@@ -3,6 +3,7 @@
 #include <ESP8266WiFi.h>
 #include <CRC16.h>
 #include <Commands.h>
+#include <Messages.h>
 
 class WifiHander
 {
