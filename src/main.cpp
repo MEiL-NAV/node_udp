@@ -27,13 +27,15 @@ void setup()
     parameters.parameters.wifi_password,
     parameters.parameters.node_id
   );
-  wifi_handler.set_udp_listener
+  wifi_handler.set_udp_multicast_group
   (
+    IPAddress(parameters.parameters.multicast_group_address),
     parameters.parameters.udp_listener
   );
-  wifi_handler.set_udp_target(
-    IPAddress(parameters.parameters.server_ip),
-    parameters.parameters.server_port
+  wifi_handler.set_udp_multicast_target(
+    IPAddress(parameters.parameters.multicast_group_address),
+    parameters.parameters.server_port,
+    parameters.parameters.multicast_ttl
   );
 
   sensors[1] = new Gyroscope_L3GD20H();
@@ -46,19 +48,24 @@ void loop()
 
   int packetSize = udp.parsePacket();
   if (packetSize > 0) {
+    struct __attribute__((__packed__))
+    {
+      uint8_t sync_id;
+      uint32_t time;
+    } payload;
     switch(static_cast<uint8_t>(udp.read()))
     {
       case 's':
       case 'S':
-        struct __attribute__((__packed__))
-        {
-          uint8_t sync_id = static_cast<uint8_t>(udp.read());
-          uint32_t time = millis();
-        } payload;
-        wifi_handler.send_udp(
+        payload.sync_id = static_cast<uint8_t>(udp.read());
+        payload.time = millis();
+        wifi_handler.send_udp_multicast(
           Commands::TIMESYNC,
           &payload
         );
+      break;
+      default:
+        Serial.println("UDP received. Size: " + String(packetSize));
       break;
     }
   }

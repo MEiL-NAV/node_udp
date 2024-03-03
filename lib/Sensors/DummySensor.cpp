@@ -2,7 +2,7 @@
 
 void DummySensor::send(WifiHander &wifi_handler)
 {
-    wifi_handler.send_udp(
+    wifi_handler.send_udp_multicast(
         Commands::DUMMY,
         &_counter
     );

@@ -10,7 +10,7 @@ void Gyroscope::send(WifiHander &wifi_handler)
         Z: Z
     };
 
-    wifi_handler.send_udp(
+    wifi_handler.send_udp_multicast(
         Commands::GYROSCOPE_READING,
         &payload
     );

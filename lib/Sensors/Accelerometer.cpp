@@ -9,7 +9,8 @@ void Accelerometer::send(WifiHander &wifi_handler)
         Y: Y,
         Z: Z
     };
-    wifi_handler.send_udp(
+    
+    wifi_handler.send_udp_multicast(
         Commands::ACCELEROMETER_READING,
         &payload
     );
